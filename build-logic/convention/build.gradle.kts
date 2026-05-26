@@ -45,5 +45,9 @@ gradlePlugin {
             id = "ruleup.jvm.library"
             implementationClass = "JvmLibraryConventionPlugin"
         }
+        register("androidTest") {
+            id = "ruleup.android.test"
+            implementationClass = "AndroidTestConventionPlugin"
+        }
     }
 }

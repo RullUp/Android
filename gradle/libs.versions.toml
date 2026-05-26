@@ -9,6 +9,10 @@ activityCompose = "1.13.0"
 kotlin = "2.3.21"
 composeBom = "2026.05.01"
 
+# version
+versionCode = "1"
+versionName = "1.0.0"
+
 # hilt
 ksp = "2.3.7"
 hilt = "2.59.2"
