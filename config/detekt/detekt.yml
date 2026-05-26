@@ -1,7 +1,3 @@
-build:
-  maxIssues: 0
-  excludeCorrectable: false
-
 config:
   validation: true
   warningsAsErrors: false
@@ -10,16 +6,16 @@ complexity:
   active: true
   LongMethod:
     active: true
-    threshold: 80
+    allowedLines: 80
   LongParameterList:
     active: true
-    functionThreshold: 8
-    constructorThreshold: 8
+    allowedFunctionParameters: 8
+    allowedConstructorParameters: 8
     ignoreDefaultParameters: true
-    ignoreAnnotated: ['Composable']
+    ignoreAnnotatedParameter: ['Composable']
   CyclomaticComplexMethod:
     active: true
-    threshold: 20
+    allowedComplexity: 20
   TooManyFunctions:
     active: false
 
@@ -33,9 +29,12 @@ style:
   ReturnCount:
     active: true
     max: 4
-  UnusedPrivateMember:
+  UnusedPrivateProperty:
     active: true
-    ignoreAnnotated: ['Preview']
+  UnusedPrivateFunction:
+    active: true
+  UnusedPrivateClass:
+    active: true
   ForbiddenComment:
     active: false
 
