@@ -1,0 +1,51 @@
+build:
+  maxIssues: 0
+  excludeCorrectable: false
+
+config:
+  validation: true
+  warningsAsErrors: false
+
+complexity:
+  active: true
+  LongMethod:
+    active: true
+    threshold: 80
+  LongParameterList:
+    active: true
+    functionThreshold: 8
+    constructorThreshold: 8
+    ignoreDefaultParameters: true
+    ignoreAnnotated: ['Composable']
+  CyclomaticComplexMethod:
+    active: true
+    threshold: 20
+  TooManyFunctions:
+    active: false
+
+style:
+  active: true
+  MagicNumber:
+    active: true
+    ignoreAnnotated: ['Composable', 'Preview']
+    ignorePropertyDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+  ReturnCount:
+    active: true
+    max: 4
+  UnusedPrivateMember:
+    active: true
+    ignoreAnnotated: ['Preview']
+  ForbiddenComment:
+    active: false
+
+naming:
+  FunctionNaming:
+    ignoreAnnotated: ['Composable']
+
+coroutines:
+  active: true
+  GlobalCoroutineUsage:
+    active: true
+  SuspendFunWithFlowReturnType:
+    active: true

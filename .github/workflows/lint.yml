@@ -1,0 +1,155 @@
+name: Static Analysis
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: static-analysis-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  security-events: write    # SARIF 업로드용 (Code Scanning)
+  actions: read
+
+jobs:
+  ktlint:
+    name: ktlint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - run: chmod +x ./gradlew
+
+      - name: Run ktlint
+        run: ./gradlew ktlintCheck --no-daemon --stacktrace
+
+      - name: Upload ktlint HTML reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ktlint-reports
+          path: '**/build/reports/ktlint/**'
+          retention-days: 14
+
+      - name: Collect ktlint SARIF
+        if: always()
+        run: |
+          mkdir -p sarif-out/ktlint
+          find . -path '*/build/reports/ktlint/*.sarif' -print0 | \
+            xargs -0 -I {} sh -c 'cp "$1" "sarif-out/ktlint/$(echo "$1" | sed "s|^\./||;s|/|_|g")"' _ {}
+          ls -la sarif-out/ktlint || true
+
+      - name: Upload ktlint SARIF
+        if: always() && hashFiles('sarif-out/ktlint/*.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: sarif-out/ktlint
+          category: ktlint
+        continue-on-error: true
+
+  detekt:
+    name: detekt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - run: chmod +x ./gradlew
+
+      - name: Run detekt
+        run: ./gradlew detekt --no-daemon --stacktrace
+
+      - name: Upload detekt HTML/XML reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: detekt-reports
+          path: |
+            **/build/reports/detekt/detekt.html
+            **/build/reports/detekt/detekt.xml
+            **/build/reports/detekt/detekt.sarif
+          retention-days: 14
+
+      - name: Collect detekt SARIF
+        if: always()
+        run: |
+          mkdir -p sarif-out/detekt
+          find . -path '*/build/reports/detekt/detekt.sarif' -print0 | \
+            xargs -0 -I {} sh -c 'cp "$1" "sarif-out/detekt/$(echo "$1" | sed "s|^\./||;s|/|_|g")"' _ {}
+          ls -la sarif-out/detekt || true
+
+      - name: Upload detekt SARIF
+        if: always() && hashFiles('sarif-out/detekt/*.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: sarif-out/detekt
+          category: detekt
+        continue-on-error: true
+
+  android-lint:
+    name: Android Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - run: chmod +x ./gradlew
+
+      - name: Run Android Lint
+        run: ./gradlew lint --no-daemon --stacktrace
+
+      - name: Upload Android Lint HTML/XML reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-lint-reports
+          path: |
+            **/build/reports/lint-results-*.html
+            **/build/reports/lint-results-*.xml
+            **/build/reports/lint-results-*.sarif
+          retention-days: 14
+
+      - name: Collect Android Lint SARIF
+        if: always()
+        run: |
+          mkdir -p sarif-out/android-lint
+          find . -path '*/build/reports/lint-results-*.sarif' -print0 | \
+            xargs -0 -I {} sh -c 'cp "$1" "sarif-out/android-lint/$(echo "$1" | sed "s|^\./||;s|/|_|g")"' _ {}
+          ls -la sarif-out/android-lint || true
+
+      - name: Upload Android Lint SARIF
+        if: always() && hashFiles('sarif-out/android-lint/*.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: sarif-out/android-lint
+          category: android-lint
+        continue-on-error: true
