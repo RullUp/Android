@@ -16,11 +16,7 @@ kotlin {
 }
 
 dependencies {
-    compileOnly(libs.android.gradlePlugin)
-    compileOnly(libs.kotlin.gradlePlugin)
-    compileOnly(libs.ksp.gradlePlugin)
-    compileOnly(libs.compose.gradlePlugin)
-    compileOnly(libs.hilt.gradlePlugin)
+    compileOnly(libs.bundles.gradle.plugins)
 }
 
 gradlePlugin {
@@ -48,6 +44,14 @@ gradlePlugin {
         register("androidTest") {
             id = "ruleup.android.test"
             implementationClass = "AndroidTestConventionPlugin"
+        }
+        register("androidPresentation") {
+            id = "ruleup.android.presentation"
+            implementationClass = "AndroidPresentationConventionPlugin"
+        }
+        register("androidData") {
+            id = "ruleup.android.data"
+            implementationClass = "AndroidDataConventionPlugin"
         }
     }
 }
