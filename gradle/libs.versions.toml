@@ -53,6 +53,21 @@ ktlint-compose = { module = "io.nlopez.compose.rules:ktlint", version.ref = "com
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 
+[bundles]
+compose = [
+    "androidx-compose-ui",
+    "androidx-compose-ui-graphics",
+    "androidx-compose-ui-tooling-preview",
+    "androidx-compose-material3",
+]
+gradle-plugins = [
+    "android-gradlePlugin",
+    "kotlin-gradlePlugin",
+    "ksp-gradlePlugin",
+    "compose-gradlePlugin",
+    "hilt-gradlePlugin",
+]
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
