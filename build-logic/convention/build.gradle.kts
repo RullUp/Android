@@ -45,5 +45,13 @@ gradlePlugin {
             id = "ruleup.android.test"
             implementationClass = "AndroidTestConventionPlugin"
         }
+        register("androidPresentation") {
+            id = "ruleup.android.presentation"
+            implementationClass = "AndroidPresentationConventionPlugin"
+        }
+        register("androidData") {
+            id = "ruleup.android.data"
+            implementationClass = "AndroidDataConventionPlugin"
+        }
     }
 }
